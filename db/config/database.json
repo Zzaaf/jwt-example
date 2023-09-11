@@ -1,0 +1,16 @@
+{
+  "development": {
+    "username": "postgres",
+    "password": "postgres",
+    "database": "jwt",
+    "host": "127.0.0.1",
+    "dialect": "postgres"
+  },
+  "production": {
+    "username": "postges",
+    "password": "postges",
+    "database": "jwt",
+    "host": "127.0.0.1",
+    "dialect": "postges"
+  }
+}
