@@ -2,26 +2,35 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
 
-router.post('/register', async (req, res) => {
+router.post('/auth/register', async (req, res) => {
   try {
     // Получаем данные пользователя из запроса
-    const { email, password } = req.body;
+    const { name, email, password } = req.body;
 
-    // Хэшируем пароль
-    const hashedPassword = await bcrypt.hash(password, 10);
+    if (name && email && password) {
+      const userInDb = await User.findOne({ where: { email } });
 
-    // Сохраняем пользователя в базу данных
-    await User.create({ email, password: hashedPassword });
+      if (!userInDb) {
+        // Хэшируем пароль
+        const hashedPassword = await bcrypt.hash(password, 10);
 
-    // Возвращаем успешный ответ
-    res.status(200).json({ message: 'Пользователь успешно зарегистрирован' });
+        // Сохраняем пользователя в базу данных
+        await User.create({ name, email, password: hashedPassword });
+
+        // Возвращаем успешный ответ
+        return res.status(201).json({ registration: true, url: '/auth', message: 'User successfully registered' });
+      }
+
+      // Возвращаем ответ в случае вторичного использования почты
+      return res.status(400).json({ registration: false, url: '/auth', message: 'This email is already in use' });
+    }
   } catch (error) {
     // Обрабатываем возможные ошибки
-    res.status(500).json({ message: 'Ошибка регистрации' });
+    res.status(500).json({ message: 'Registration failed' });
   }
 });
 
-router.post('/login', async (req, res) => {
+router.post('/auth/login', async (req, res) => {
   try {
     // Получаем данные пользователя из запроса
     const { email, password } = req.body;

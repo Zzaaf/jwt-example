@@ -1,7 +1,8 @@
+require('@babel/register');
 const express = require('express');
 const config = require('./config/serverConfig');
 const mainRouter = require('./routes/views/main.routes');
-const apiRouter = require('./routes/api/main.api.routes');
+const apiRouter = require('./routes/api/auth.api.routes');
 
 const app = express();
 const PORT = process.env.PORT ?? 3000;
