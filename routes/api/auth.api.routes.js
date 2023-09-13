@@ -1,6 +1,9 @@
+require('dotenv').config();
 const router = require('express').Router();
+const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
+const cookiesConfig = require('../../config/cookiesConfig');
 
 router.post('/auth/register', async (req, res) => {
   try {
@@ -35,29 +38,35 @@ router.post('/auth/login', async (req, res) => {
     // Получаем данные пользователя из запроса
     const { email, password } = req.body;
 
-    // Ищем пользователя в базе данных по имени пользователя
+    if (email && password) {
+      // Ищем пользователя в базе данных по имени пользователя
+      const { dataValues: userInDb } = await User.findOne({ where: { email } });
 
-    // Если пользователь не найден, вернуть ошибку
-    if (!user) {
-      return res.status(404).json({ message: 'Пользователь не найден' });
+      // Если пользователь не найден, вернуть ошибку
+      if (!userInDb) {
+        return res.status(404).json({ message: 'User is not found' });
+      }
+
+      // Проверяем правильность пароля
+      const passwordMatch = await bcrypt.compare(password, userInDb.password);
+
+      // Если пароль не совпадает, вернуть ошибку
+      if (!passwordMatch) {
+        return res.status(401).json({ message: 'Incorrect password' });
+      }
+
+      // Создаем JWT c секретным ключом (генерация цифровой подписи)
+      const token = jwt.sign({ user: userInDb.name, email }, `${process.env.SECRET_KEY}`, { expiresIn: '1d', algorithm: 'HS256' });
+
+      // Возвращаем токен в cookie при ответе
+      res.cookie('uid', token, cookiesConfig).json({ token });
+    } else {
+      return res.status(400).json({ message: 'All fields were not sent' });
     }
-
-    // Проверяем правильность пароля
-    const passwordMatch = await bcrypt.compare(password, user.password);
-
-    // Если пароль не совпадает, вернуть ошибку
-    if (!passwordMatch) {
-      return res.status(401).json({ message: 'Неверный пароль' });
-    }
-
-    // Создаем JWT секретным ключом
-    const token = jwt.sign({ username: user.username }, secretKey, { expiresIn: '1d' });
-
-    // Возвращаем токен в ответе
-    res.status(200).json({ token });
   } catch (error) {
+    console.log(error.message);
     // Обрабатываем возможные ошибки
-    res.status(500).json({ message: 'Ошибка аутентификации' });
+    res.status(500).json({ message: 'Authentication Error' });
   }
 });
 
