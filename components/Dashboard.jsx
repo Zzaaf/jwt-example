@@ -9,14 +9,14 @@ const Layout = require('./Layout');
 function Dashboard({ title, user }) {
   return (
     <Layout title={title}>
-      <Header user={user} />
+      <Header user={user.user} />
 
       <main className="flex-shrink-0">
         <div className="container">
           <h1 className="mt-5">
             Hello,
             {' '}
-            {user.username}
+            {user.user}
             !
           </h1>
           <p className="lead">Welcome to your Dashboard</p>
@@ -32,7 +32,7 @@ function Dashboard({ title, user }) {
 // PropTypes
 Dashboard.propTypes = {
   title: PropTypes.string.isRequired,
-  user: PropTypes.shape({ username: PropTypes.string }).isRequired,
+  user: PropTypes.shape({ user: PropTypes.string }).isRequired,
 };
 
 module.exports = Dashboard;

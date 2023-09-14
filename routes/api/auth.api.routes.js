@@ -59,7 +59,7 @@ router.post('/auth/login', async (req, res) => {
       const token = jwt.sign({ user: userInDb.name, email }, `${process.env.SECRET_KEY}`, { expiresIn: '1d', algorithm: 'HS256' });
 
       // Возвращаем токен в cookie при ответе
-      res.cookie('uid', token, cookiesConfig).json({ token });
+      res.cookie('uid', token, cookiesConfig).json({ login: true, url: '/dashboard' });
     } else {
       return res.status(400).json({ message: 'All fields were not sent' });
     }
