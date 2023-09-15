@@ -4,6 +4,7 @@ const jwt = require('jsonwebtoken');
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
 const cookiesConfig = require('../../config/cookiesConfig');
+const { updateTokens } = require('../../helpers/authHelper');
 
 router.post('/auth/register', async (req, res) => {
   try {
@@ -55,18 +56,24 @@ router.post('/auth/login', async (req, res) => {
         return res.status(401).json({ message: 'Incorrect password' });
       }
 
-      // Создаем JWT c секретным ключом (генерация цифровой подписи)
-      const token = jwt.sign({ user: userInDb.name, email }, `${process.env.SECRET_KEY}`, { expiresIn: '1d', algorithm: 'HS256' });
+      // // Создаем JWT c секретным ключом (генерация цифровой подписи)
+      // const token = jwt.sign({ user: userInDb.name, email }, `${process.env.SECRET_KEY}`, { expiresIn: '1d', algorithm: 'HS256' });
 
-      // Возвращаем токен в cookie при ответе
-      res.cookie('uid', token, cookiesConfig).json({ login: true, url: '/dashboard' });
+      // // Возвращаем токен в cookie при ответе
+      // res.cookie('uid', token, cookiesConfig).json({ login: true, url: '/dashboard' });
+
+      updateTokens(userInDb.id)
+        .then((tokens) => {
+          res.cookie('uid', tokens, cookiesConfig).json({ login: true, url: '/dashboard' });
+        }).catch((error) => {
+          res.json({ updateTokens: false, message: error.message });
+        });
     } else {
       return res.status(400).json({ message: 'All fields were not sent' });
     }
   } catch (error) {
-    console.log(error.message);
     // Обрабатываем возможные ошибки
-    res.status(500).json({ message: 'Authentication Error' });
+    res.status(500).json({ message: 'Authentication Error', error: error.message });
   }
 });
 
