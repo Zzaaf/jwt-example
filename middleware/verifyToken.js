@@ -1,5 +1,5 @@
-const jwt = require('jsonwebtoken');
 require('dotenv').config();
+const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
   const { uid: token } = req.cookies;
@@ -16,8 +16,6 @@ function verifyToken(req, res, next) {
         return res.status(400).json({ message: 'Invalid token!' });
       }
     }
-
-    console.log(payload);
 
     res.locals.user = payload.name;
     next();

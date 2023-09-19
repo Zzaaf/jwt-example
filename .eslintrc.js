@@ -24,5 +24,6 @@ module.exports = {
   },
   rules: {
     'consistent-return': 0,
+    'max-len': 0,
   },
 };
