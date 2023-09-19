@@ -8,12 +8,18 @@ function verifyToken(req, res, next) {
     return res.status(401).json({ message: 'No token' });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (error, user) => {
+  jwt.verify(token, process.env.SECRET_KEY, (error, payload) => {
     if (error) {
-      return res.status(403).json({ message: 'Invalid token' });
+      if (error instanceof jwt.TokenExpiredError) {
+        return res.status(400).json({ message: 'Token expired!' });
+      } if (error instanceof jwt.JsonWebTokenError) {
+        return res.status(400).json({ message: 'Invalid token!' });
+      }
     }
 
-    res.locals.user = user;
+    console.log(payload);
+
+    res.locals.user = payload.name;
     next();
   });
 }

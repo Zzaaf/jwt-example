@@ -22,7 +22,7 @@ function Header({ user }) {
               </ul>
 
               <div className="text-end">
-                <a href="/logout" className="btn btn-warning">Logout</a>
+                <a href="/api/auth/logout" className="btn btn-warning">Logout</a>
               </div>
             </div>
           </div>
@@ -40,7 +40,7 @@ function Header({ user }) {
 
 // PropTypes
 Header.propTypes = {
-  user: PropTypes.shape({ username: PropTypes.string || undefined }),
+  user: PropTypes.string,
 };
 
 Header.defaultProps = {
