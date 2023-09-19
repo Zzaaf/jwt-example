@@ -1,10 +1,10 @@
 const jwtConfig = {
   access: {
     type: 'access',
-    expiresIn: '15m',
+    expiresIn: '5m',
   },
   refresh: {
-    type: 'access',
+    type: 'refresh',
     expiresIn: '7d',
   },
 };
