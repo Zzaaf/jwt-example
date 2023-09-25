@@ -1,7 +1,9 @@
+const jwtConfig = require('./jwtConfig');
+
 const cookiesConfig = {
   cookieName: 'uid',
   httpOnly: true,
-  maxAge: 1000 * 60 * 60 * 24,
+  maxAge: jwtConfig.refresh.expiresIn,
 };
 
 module.exports = cookiesConfig;

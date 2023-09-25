@@ -19,6 +19,7 @@ router.get('/registration', (req, res) => {
 
 router.get('/dashboard', verifyToken, (req, res) => {
   const { user } = res.locals;
+  console.log(user);
 
   if (user) {
     res.renderComponent(Dashboard, { title: 'JWT Example: Dashboard', user });

@@ -2,13 +2,14 @@ require('dotenv').config();
 const jwt = require('jsonwebtoken');
 
 function verifyToken(req, res, next) {
-  const { uid: token } = req.cookies;
+  // временная заглушка, работает напрямую через RT
+  const { uid: refreshToken } = req.cookies;
 
-  if (token === null) {
+  if (refreshToken === null) {
     return res.status(401).json({ message: 'No token' });
   }
 
-  jwt.verify(token, process.env.SECRET_KEY, (error, payload) => {
+  jwt.verify(refreshToken, process.env.SIGNATURE_REFRESH, (error, payload) => {
     if (error) {
       if (error instanceof jwt.TokenExpiredError) {
         return res.status(400).json({ message: 'Token expired!' });
@@ -17,7 +18,7 @@ function verifyToken(req, res, next) {
       }
     }
 
-    res.locals.user = payload.name;
+    res.locals.user = payload.payload;
     next();
   });
 }

@@ -3,7 +3,7 @@ const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
 const cookiesConfig = require('../../config/cookiesConfig');
-const { generateAccessToken } = require('../../helpers/authHelpers');
+const { generateTokens } = require('../../utils/authUtils');
 
 router.post('/auth/register', async (req, res) => {
   try {
@@ -55,12 +55,10 @@ router.post('/auth/login', async (req, res) => {
         return res.status(401).json({ message: 'Incorrect password' });
       }
 
-      // Создаем JWT c секретным ключом (генерация цифровой подписи)
-      // const token = jwt.sign({ user: userInDb.name, email }, process.env.SECRET_KEY, { expiresIn: '1m', algorithm: 'HS256' });
-      const token = generateAccessToken(userInDb);
+      const { accessToken, refreshToken } = generateTokens(userInDb.name);
 
       // Возвращаем токен в cookie при ответе
-      res.cookie(cookiesConfig.cookieName, token, cookiesConfig).json({ login: true, url: '/dashboard' });
+      res.cookie(cookiesConfig.cookieName, refreshToken, cookiesConfig).json({ login: true, url: '/dashboard', accessToken });
     } else {
       return res.status(400).json({ message: 'All fields were not sent' });
     }
@@ -72,9 +70,9 @@ router.post('/auth/login', async (req, res) => {
 
 router.get('/auth/logout', async (req, res) => {
   try {
-    const { uid } = req.cookies;
+    const { uid: refreshToken } = req.cookies;
 
-    if (uid) {
+    if (refreshToken) {
       res.locals.user = {};
       res.clearCookie(cookiesConfig.cookieName).redirect('/');
     }
