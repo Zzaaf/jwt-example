@@ -16,7 +16,7 @@ function Home({ title }) {
         <div className="p-5 mb-4 bg-light rounded-3">
           <div className="container-fluid py-5">
             <h1 className="display-5 fw-bold">Custom Express Skeleton</h1>
-            <p className="col-md-8 fs-4">An example of a skeleton with basic registration and authorization using sessions</p>
+            <p className="col-md-8 fs-4">An example of a skeleton with basic registration and authorization using JWT</p>
             <a
               href="https://github.com/Zzaaf/node-express-sequelize-skeleton"
               target="_blank"

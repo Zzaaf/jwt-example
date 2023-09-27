@@ -3,7 +3,7 @@ const Home = require('../../components/Home');
 const Authorization = require('../../components/Authorization');
 const Registration = require('../../components/Registration');
 const Dashboard = require('../../components/Dashboard');
-const verifyToken = require('../../middleware/verifyToken');
+const { verifyToken } = require('../../middleware/verifyTokens');
 
 router.get('/', (req, res) => {
   res.renderComponent(Home, { title: 'JWT Example: Home' });
