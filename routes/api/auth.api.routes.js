@@ -57,8 +57,11 @@ router.post('/auth/login', async (req, res) => {
 
       const { accessToken, refreshToken } = generateTokens(userInDb.name);
 
-      // Возвращаем токен в cookie при ответе
-      res.cookie(cookiesConfig.cookieName, refreshToken, cookiesConfig).json({ login: true, url: '/dashboard', accessToken });
+      // Возвращаем токены в httpOnly cookie при ответе
+      res
+        .cookie(cookiesConfig.refresh, refreshToken, { maxAge: cookiesConfig.maxAgeRefresh, httpOnly: true })
+        .cookie(cookiesConfig.access, accessToken, { maxAge: cookiesConfig.maxAgeAccess, httpOnly: true })
+        .json({ login: true, url: '/dashboard' });
     } else {
       return res.status(400).json({ message: 'All fields were not sent' });
     }
@@ -70,11 +73,14 @@ router.post('/auth/login', async (req, res) => {
 
 router.get('/auth/logout', async (req, res) => {
   try {
-    const { uid: refreshToken } = req.cookies;
+    const { access } = req.cookies;
 
-    if (refreshToken) {
+    if (access) {
       res.locals.user = {};
-      res.clearCookie(cookiesConfig.cookieName).redirect('/');
+      res
+        .clearCookie(cookiesConfig.refresh)
+        .clearCookie(cookiesConfig.access)
+        .redirect('/');
     }
   } catch (error) {
     console.log(error.message);
