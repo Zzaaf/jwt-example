@@ -6,7 +6,7 @@ const { verifyRefreshToken } = require('../../middleware/verifyTokens');
 // обработчик для refresh токена, формирует новую пару accessToken и refreshToken
 router.get('/refresh', verifyRefreshToken, (req, res) => {
   try {
-    const user = res.locals.user.payload;
+    const { user } = res.locals;
     const { accessToken, refreshToken } = generateTokens(user);
 
     // Возвращаем пару токенов в http-only cookie при ответе

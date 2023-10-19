@@ -10,11 +10,7 @@ function verifyAccessToken(req, res, next) {
 
   jwt.verify(access, process.env.SIGNATURE_ACCESS, (error, payload) => {
     if (error) {
-      if (error instanceof jwt.TokenExpiredError) {
-        // return res.status(401).json({ message: 'Token expired!' });
-        return res.redirect('/api/tokens/refresh');
-      } if (error instanceof jwt.JsonWebTokenError) {
-        // return res.status(401).json({ message: 'Invalid token!' });
+      if (error instanceof jwt.TokenExpiredError || error instanceof jwt.JsonWebTokenError) {
         return res.redirect('/api/tokens/refresh');
       }
     }
@@ -29,11 +25,11 @@ function verifyRefreshToken(req, res, next) {
   const { refresh } = req.cookies;
 
   if (!refresh) {
-    res.status(401).json({ message: 'No token' });
+    return res.redirect('/');
   }
 
   try {
-    const payload = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
+    const { payload } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
     res.locals.user = payload;
   } catch (error) {
     res.status(401).json({ message: error.message });
