@@ -1,3 +1,4 @@
+/* eslint-disable react/prop-types */
 const React = require('react');
 const PropTypes = require('prop-types');
 
@@ -6,12 +7,10 @@ const Header = require('./Header');
 const Footer = require('./Footer');
 const Layout = require('./Layout');
 
-function Profile({
-  user, registration, ip, title,
-}) {
+function Profile({ user, title }) {
   return (
     <Layout title={title}>
-      <Header user={user} />
+      <Header name={user.name} />
 
       <main className="flex-shrink-0">
         <div className="container">
@@ -21,7 +20,7 @@ function Profile({
               <h5 className="card-title">
                 User name:
                 {' '}
-                {user.username}
+                {user.name}
               </h5>
               <p className="card-text">
                 Email:
@@ -29,19 +28,6 @@ function Profile({
                 <a href="mailto:{{email}}" className="card-text">{user.email}</a>
               </p>
             </div>
-
-            <ul className="list-group list-group-flush">
-              <li className="list-group-item">
-                Registration date:
-                {' '}
-                {registration}
-              </li>
-              <li className="list-group-item">
-                Your IP:
-                {' '}
-                {ip}
-              </li>
-            </ul>
 
             <div className="card-body d-flex justify-content-around">
               <a href={`/users/${user.id}`} className="btn btn-primary">Edit profile</a>
@@ -64,8 +50,6 @@ Profile.propTypes = {
     id: PropTypes.number,
     email: PropTypes.string,
   }).isRequired,
-  registration: PropTypes.string.isRequired,
-  ip: PropTypes.string.isRequired,
 };
 
 module.exports = Profile;

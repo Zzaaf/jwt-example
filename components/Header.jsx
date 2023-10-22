@@ -2,10 +2,10 @@
 const React = require('react');
 const PropTypes = require('prop-types');
 
-function Header({ user }) {
+function Header({ name }) {
   return (
     <>
-      {user ? (
+      {name ? (
         <header className="p-3 bg-dark text-white mb-5">
           <div className="container">
             <div className="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
@@ -40,11 +40,11 @@ function Header({ user }) {
 
 // PropTypes
 Header.propTypes = {
-  user: PropTypes.string,
+  name: PropTypes.string,
 };
 
 Header.defaultProps = {
-  user: undefined,
+  name: undefined,
 };
 
 module.exports = Header;

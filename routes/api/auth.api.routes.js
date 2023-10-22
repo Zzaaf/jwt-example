@@ -42,20 +42,19 @@ router.post('/auth/login', async (req, res) => {
       // Ищем пользователя в базе данных по имени пользователя
       const userInDb = await User.findOne({ where: { email }, raw: true });
 
-      // Если пользователь не найден, вернуть ошибку
-      if (!userInDb) {
-        return res.status(404).json({ message: 'User is not found' });
+      if (userInDb) {
+        // Проверяем правильность пароля
+        const passwordMatch = await bcrypt.compare(password, userInDb.password);
+
+        // Если пароль не совпадает, вернуть клиентскую ошибку без указания точной причины для безопасности
+        if (!passwordMatch) {
+          return res.status(403).json({ message: 'Incorrect password or email' });
+        }
+      } else {
+        return res.status(404).json({ message: 'Incorrect password or email' });
       }
 
-      // Проверяем правильность пароля
-      const passwordMatch = await bcrypt.compare(password, userInDb.password);
-
-      // Если пароль не совпадает, вернуть ошибку
-      if (!passwordMatch) {
-        return res.status(401).json({ message: 'Incorrect password' });
-      }
-
-      const { accessToken, refreshToken } = generateTokens(userInDb.name);
+      const { accessToken, refreshToken } = generateTokens({ id: userInDb.id, email: userInDb.email, name: userInDb.name });
 
       // Возвращаем токены в httpOnly cookie при ответе
       res

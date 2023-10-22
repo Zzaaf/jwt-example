@@ -7,6 +7,4 @@ const generateTokens = (payload) => ({
   refreshToken: jwt.sign({ payload }, process.env.SIGNATURE_REFRESH, { expiresIn: jwtConfig.refresh.expiresIn }),
 });
 
-module.exports = {
-  generateTokens,
-};
+module.exports = { generateTokens };
