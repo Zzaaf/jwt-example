@@ -1,9 +1,9 @@
-const authChecker = (req, res, next) => {
+const ifAuthRedirect = (url) => (req, res, next) => {
   if (req.cookies.refresh) {
-    res.redirect('/dashboard');
+    res.redirect(url);
   } else {
     next();
   }
 };
 
-module.exports = authChecker;
+module.exports = ifAuthRedirect;

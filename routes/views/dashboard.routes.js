@@ -2,7 +2,7 @@ const router = require('express').Router();
 const Dashboard = require('../../components/Dashboard');
 
 router.get('/', (req, res) => {
-  const { payload: user } = res.locals.user;
+  const { user } = res.locals;
 
   if (user) {
     res.renderComponent(Dashboard, { title: 'JWT Example: Dashboard', name: user.name });

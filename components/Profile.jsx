@@ -7,7 +7,7 @@ const Header = require('./Header');
 const Footer = require('./Footer');
 const Layout = require('./Layout');
 
-function Profile({ user, title }) {
+function Profile({ user, title, email }) {
   return (
     <Layout title={title}>
       <Header name={user.name} />
@@ -25,7 +25,7 @@ function Profile({ user, title }) {
               <p className="card-text">
                 Email:
                 {' '}
-                <a href="mailto:{{email}}" className="card-text">{user.email}</a>
+                <a href={`mailto:${email}`} className="card-text">{email}</a>
               </p>
             </div>
 
