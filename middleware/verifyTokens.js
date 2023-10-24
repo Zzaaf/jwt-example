@@ -24,7 +24,9 @@ function verifyRefreshToken(req, res, next) {
 
     next();
   } catch (error) {
-    res.status(401).json({ message: error.message });
+    res
+      .clearCookie(cookiesConfig.refresh)
+      .redirect('/auth');
   }
 }
 
