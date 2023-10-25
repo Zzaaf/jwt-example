@@ -18,7 +18,6 @@ function Header({ name }) {
               <ul className="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
                 <li><a href="/profile" className="nav-link px-2 text-white">Profile</a></li>
                 <li><a href="/dashboard" className="nav-link px-2 text-white">Dashboard</a></li>
-                <li><a href="/cards" className="nav-link px-2 text-white">Cards</a></li>
               </ul>
 
               <div className="text-end">

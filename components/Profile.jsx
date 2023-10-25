@@ -30,8 +30,8 @@ function Profile({ user, title, email }) {
             </div>
 
             <div className="card-body d-flex justify-content-around">
-              <a href={`/users/${user.id}`} className="btn btn-primary">Edit profile</a>
-              <button id="deleteBtn" type="button" data-url={`/users/${user.id}`} className="btn btn-danger">Delete profile</button>
+              <a href={`/api/users/${user.id}`} className="btn btn-primary">Edit profile</a>
+              <button id="deleteBtn" type="button" data-url={`/api/users/${user.id}`} className="btn btn-danger">Delete profile</button>
             </div>
           </div>
 
