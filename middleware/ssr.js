@@ -1,22 +1,20 @@
 const React = require('react');
 const ReactDOMServer = require('react-dom/server');
 
-function renderComponent(reactComponent, props = {}, options = { htmlOnly: false }) {
-  const reactElement = React.createElement(reactComponent, {
-    ...this.app.locals, // передать app.locals
-    ...this.locals, // передать res.locals
-    ...props, // передать пропсы
+function renderComponent(component, props, { doctype } = { doctype: true }) {
+  const reactElement = React.createElement(component, {
+    ...props,
+    // ещё в компонент передаем в качестве пропсов все,
+    // что лежит в res.locals (например, res.locals.user)
+    ...this.locals,
+    // также передаем все, что лежит в app.locals
+    ...this.app.locals,
   });
-
   const html = ReactDOMServer.renderToStaticMarkup(reactElement);
-
-  if (options.htmlOnly) {
-    return html;
-  }
-  const document = `<!DOCTYPE html>${html}`;
-  this.send(document);
+  return doctype ? `<!DOCTYPE html>${html}` : html;
 }
 
+// добавляем в объект res функцию renderComponent, мы будем вызывать эту функцию дальше в роутах
 function ssr(req, res, next) {
   res.renderComponent = renderComponent;
   next();

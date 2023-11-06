@@ -5,15 +5,18 @@ const Registration = require('../../components/Registration');
 const ifAuthRedirect = require('../../middleware/auth');
 
 router.get('/', ifAuthRedirect('/dashboard'), (req, res) => {
-  res.renderComponent(Home, { title: 'JWT Example: Home' });
+  const html = res.renderComponent(Home, { title: 'JWT Example: Home' });
+  res.send(html);
 });
 
 router.get('/auth', ifAuthRedirect('/dashboard'), (req, res) => {
-  res.renderComponent(Authorization, { title: 'JWT Example: Auth' });
+  const html = res.renderComponent(Authorization, { title: 'JWT Example: Auth' });
+  res.send(html);
 });
 
 router.get('/registration', ifAuthRedirect('/dashboard'), (req, res) => {
-  res.renderComponent(Registration, { title: 'JWT Example: Registration' });
+  const html = res.renderComponent(Registration, { title: 'JWT Example: Registration' });
+  res.send(html);
 });
 
 module.exports = router;
