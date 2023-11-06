@@ -5,11 +5,8 @@ router.get('/', (req, res) => {
   const { user } = res.locals;
 
   if (user) {
-    res.renderComponent(Profile, {
-      user,
-      email: user.email,
-      title: 'Your Profile',
-    });
+    const html = res.renderComponent(Profile, { user, email: user.email, title: 'Your Profile' });
+    res.send(html);
   } else {
     res.redirect('/auth');
   }

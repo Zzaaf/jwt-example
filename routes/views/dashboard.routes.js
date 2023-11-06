@@ -5,7 +5,8 @@ router.get('/', (req, res) => {
   const { user } = res.locals;
 
   if (user) {
-    res.renderComponent(Dashboard, { title: 'JWT Example: Dashboard', name: user.name });
+    const html = res.renderComponent(Dashboard, { title: 'JWT Example: Dashboard', name: user.name });
+    res.send(html);
   } else {
     res.redirect('/auth');
   }
