@@ -12,10 +12,10 @@ function verifyRefreshToken(req, res, next) {
   }
 
   try {
-    const { payload } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
+    const { user } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
+    const { accessToken, refreshToken } = generateTokens({ user: { id: user.id, email: user.email, name: user.name } });
 
-    res.locals.user = payload;
-    const { accessToken, refreshToken } = generateTokens(payload);
+    res.locals.user = user;
 
     // Возвращаем пару токенов в http-only cookie при ответе
     res
@@ -34,8 +34,8 @@ function verifyAccessToken(req, res, next) {
   const { access } = req.cookies;
 
   try {
-    const { payload } = jwt.verify(access, process.env.SIGNATURE_ACCESS);
-    res.locals.user = payload;
+    const { user } = jwt.verify(access, process.env.SIGNATURE_ACCESS);
+    res.locals.user = user;
     next();
   } catch (error) {
     verifyRefreshToken(req, res, next);

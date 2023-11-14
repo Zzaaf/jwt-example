@@ -54,7 +54,7 @@ router.post('/auth/login', async (req, res) => {
         return res.status(404).json({ message: 'Incorrect password or email' });
       }
 
-      const { accessToken, refreshToken } = generateTokens({ id: userInDb.id, email: userInDb.email, name: userInDb.name });
+      const { accessToken, refreshToken } = generateTokens({ user: { id: userInDb.id, email: userInDb.email, name: userInDb.name } });
 
       // Возвращаем токены в httpOnly cookie при ответе
       res
