@@ -3,6 +3,12 @@ const cookiesConfig = require('../../config/cookiesConfig');
 const { User } = require('../../db/models');
 const { verifyAccessToken } = require('../../middleware/verifyTokens');
 
+router.route('/')
+  .get((req, res) => {
+    User.findAll({ raw: true })
+      .then((users) => res.json(users));
+  });
+
 router.route('/:id')
   .put((req, res) => {
     const { id } = req.params;

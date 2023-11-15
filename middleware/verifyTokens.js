@@ -5,13 +5,8 @@ const { generateTokens } = require('../utils/authUtils');
 
 // Проверка refresh токена из куки
 function verifyRefreshToken(req, res, next) {
-  const { refresh } = req.cookies;
-
-  if (!refresh) {
-    return res.redirect('/auth');
-  }
-
   try {
+    const { refresh } = req.cookies;
     const { user } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
     const { accessToken, refreshToken } = generateTokens({ user: { id: user.id, email: user.email, name: user.name } });
 
@@ -25,16 +20,18 @@ function verifyRefreshToken(req, res, next) {
     next();
   } catch (error) {
     res
-      .clearCookie(cookiesConfig.refresh)
-      .redirect('/auth');
+      .clearCookie(cookiesConfig.access)
+      .clearCookie(cookiesConfig.refresh);
+
+    next();
   }
 }
 
 function verifyAccessToken(req, res, next) {
-  const { access } = req.cookies;
-
   try {
+    const { access } = req.cookies;
     const { user } = jwt.verify(access, process.env.SIGNATURE_ACCESS);
+
     res.locals.user = user;
     next();
   } catch (error) {

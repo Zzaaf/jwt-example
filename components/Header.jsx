@@ -21,7 +21,7 @@ function Header({ name }) {
               </ul>
 
               <div className="text-end">
-                <a href="/api/auth/logout" className="btn btn-warning">Logout</a>
+                <a href="/logout" className="btn btn-warning">Logout</a>
               </div>
             </div>
           </div>

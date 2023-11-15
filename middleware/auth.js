@@ -1,9 +1,20 @@
 const ifAuthRedirect = (url) => (req, res, next) => {
-  if (req.cookies.refresh) {
+  if (res.locals.user) {
     res.redirect(url);
   } else {
     next();
   }
 };
 
-module.exports = ifAuthRedirect;
+function rejectIfNotAuthorized(req, res, next) {
+  if (res.locals.user) {
+    next();
+  } else {
+    res.status(403).json({ message: 'No access' });
+  }
+}
+
+module.exports = {
+  ifAuthRedirect,
+  rejectIfNotAuthorized,
+};
