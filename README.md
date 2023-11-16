@@ -10,7 +10,7 @@
 ## Алгоритм работы
 
 1. Пользователь c помощью почты и пароля успешно проходит аутентификацию
-2. После успешной аутентификации сервер подписывает два токена: `refresh` и `access` (полезной нагрузкой будут необходимые поля из БД), после отправляет их в виде `http-only cookie` с разным временем срока годности (в моём примере 5 минут и 12 часов),
+2. После успешной аутентификации сервер подписывает два токена: `refresh` и `access` (полезной нагрузкой будут объект с необходимыми полями из БД), после отправляет их в виде `http-only cookie` с разным временем срока годности (в моём примере 5 минут и 12 часов),
 3. Все последующие запросы от клиента сервер проверяет на наличие куки с `access` токеном через `middleware`, если он есть, наполняем `res.locals.user` полезной нагрузкой из токена и отдаём ответ как аутентифицированному пользователю
 4. Если `access` токен истёк, `middleware` это фиксирует и делает проверку наличия `refresh` токена из куки
 5. Если `refresh` токен валиден, подписывается новая пара токенов (полезной нагрузкой будет `res.locals.user`) и новая пара кук
@@ -22,7 +22,7 @@
 Проверка авторизации `auth.js`:
 ```js
 const ifAuthRedirect = (url) => (req, res, next) => {
-  if (req.cookies.refresh) {
+  if (res.locals.user) {
     res.redirect(url);
   } else {
     next();
@@ -36,11 +36,11 @@ module.exports = ifAuthRedirect;
 
 ```js
 function verifyAccessToken(req, res, next) {
-  const { access } = req.cookies;
-
   try {
-    const { payload } = jwt.verify(access, process.env.SIGNATURE_ACCESS);
-    res.locals.user = payload;
+    const { access } = req.cookies;
+    const { user } = jwt.verify(access, process.env.ACCESS_TOKEN_SECRET);
+
+    res.locals.user = user;
     next();
   } catch (error) {
     verifyRefreshToken(req, res, next);
@@ -52,17 +52,12 @@ function verifyAccessToken(req, res, next) {
 
 ```js
 function verifyRefreshToken(req, res, next) {
-  const { refresh } = req.cookies;
-
-  if (!refresh) {
-    return res.redirect('/auth');
-  }
-
   try {
-    const { payload } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
+    const { refresh } = req.cookies;
+    const { user } = jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET);
+    const { accessToken, refreshToken } = generateTokens({ user: { id: user.id, email: user.email, name: user.name } });
 
-    res.locals.user = payload;
-    const { accessToken, refreshToken } = generateTokens(payload);
+    res.locals.user = user;
 
     // Возвращаем пару токенов в http-only cookie при ответе
     res
@@ -72,8 +67,10 @@ function verifyRefreshToken(req, res, next) {
     next();
   } catch (error) {
     res
-      .clearCookie(cookiesConfig.refresh)
-      .redirect('/auth');
+      .clearCookie(cookiesConfig.access)
+      .clearCookie(cookiesConfig.refresh);
+
+    next();
   }
 }
 ```
@@ -88,8 +85,8 @@ const jwt = require('jsonwebtoken');
 const jwtConfig = require('../config/jwtConfig');
 
 const generateTokens = (payload) => ({
-  accessToken: jwt.sign({ payload }, process.env.SIGNATURE_ACCESS, { expiresIn: jwtConfig.access.expiresIn }),
-  refreshToken: jwt.sign({ payload }, process.env.SIGNATURE_REFRESH, { expiresIn: jwtConfig.refresh.expiresIn }),
+  accessToken: jwt.sign(payload, process.env.ACCESS_TOKEN_SECRET, { expiresIn: jwtConfig.access.expiresIn }),
+  refreshToken: jwt.sign(payload, process.env.REFRESH_TOKEN_SECRET, { expiresIn: jwtConfig.refresh.expiresIn }),
 });
 
 module.exports = { generateTokens };

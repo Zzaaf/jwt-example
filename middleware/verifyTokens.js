@@ -7,7 +7,7 @@ const { generateTokens } = require('../utils/authUtils');
 function verifyRefreshToken(req, res, next) {
   try {
     const { refresh } = req.cookies;
-    const { user } = jwt.verify(refresh, process.env.SIGNATURE_REFRESH);
+    const { user } = jwt.verify(refresh, process.env.REFRESH_TOKEN_SECRET);
     const { accessToken, refreshToken } = generateTokens({ user: { id: user.id, email: user.email, name: user.name } });
 
     res.locals.user = user;
@@ -30,7 +30,7 @@ function verifyRefreshToken(req, res, next) {
 function verifyAccessToken(req, res, next) {
   try {
     const { access } = req.cookies;
-    const { user } = jwt.verify(access, process.env.SIGNATURE_ACCESS);
+    const { user } = jwt.verify(access, process.env.ACCESS_TOKEN_SECRET);
 
     res.locals.user = user;
     next();

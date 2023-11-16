@@ -111,12 +111,12 @@ if (formEdit) {
   formEdit.addEventListener('submit', async (event) => {
     event.preventDefault();
 
-    const { action, username, email } = event.target;
+    const { action, name, email } = event.target;
 
     const response = await fetch(action, {
       method: 'PUT',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username: username.value, email: email.value }),
+      body: JSON.stringify({ name: name.value, email: email.value }),
     });
 
     const data = await response.json();

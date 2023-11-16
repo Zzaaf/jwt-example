@@ -26,5 +26,6 @@ module.exports = {
     'consistent-return': 0,
     'max-len': 0,
     'linebreak-style': 0,
+    'no-autofocus': 0,
   },
 };

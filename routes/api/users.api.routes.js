@@ -3,19 +3,22 @@ const cookiesConfig = require('../../config/cookiesConfig');
 const { User } = require('../../db/models');
 const { verifyAccessToken } = require('../../middleware/verifyTokens');
 
-router.route('/')
-  .get((req, res) => {
-    User.findAll({ raw: true })
-      .then((users) => res.json(users));
-  });
+router.get('/', (req, res) => {
+  User.findAll({ raw: true })
+    .then((users) => res.json(users));
+});
 
 router.route('/:id')
   .put((req, res) => {
     const { id } = req.params;
 
-    User.update(req.body, { where: { id }, returning: true })
-      .then((updatedUser) => res.status(201).json(updatedUser))
-      .catch((error) => res.status(500).json({ error }));
+    if (res.locals.user.id === Number(id)) {
+      User.update(req.body, { where: { id }, returning: true })
+        .then(() => res.status(200).json({ updated: true, url: '/dashboard' }))
+        .catch((error) => res.status(500).json({ error }));
+    } else {
+      return res.json({ updated: false });
+    }
   })
   .delete(verifyAccessToken, (req, res) => {
     const { id } = req.params;

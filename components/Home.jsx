@@ -18,7 +18,7 @@ function Home({ title }) {
             <h1 className="display-5 fw-bold">Custom Express Skeleton</h1>
             <p className="col-md-8 fs-4">An example of a skeleton with basic registration and authorization using JWT</p>
             <a
-              href="https://github.com/Zzaaf/node-express-sequelize-skeleton"
+              href="https://github.com/Zzaaf/jwt-example"
               target="_blank"
               className="btn btn-success btn-lg"
               type="button"

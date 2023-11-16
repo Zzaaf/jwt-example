@@ -9,17 +9,17 @@ const Layout = require('./Layout');
 function Edit({ user, id, title }) {
   return (
     <Layout title={title}>
-      <Header user={user} />
+      <Header name={user.name} />
 
       <main className="flex-shrink-0">
         <div className="container">
           <div className="row justify-content-center">
-            <form id="formEdit" className="col-6 mt-5" action={`/users/${id}`}>
+            <form id="formEdit" className="col-6 mt-5" action={`/api/users/${id}`}>
               <div className="mb-3">
-                <input type="text" name="username" className="form-control" placeholder="User name" value={user.username} />
+                <input type="text" name="name" className="form-control" placeholder="User name" defaultValue={user.name} />
               </div>
               <div className="mb-3">
-                <input type="email" name="email" className="form-control" placeholder="Email" value={user.email} />
+                <input type="email" name="email" className="form-control" placeholder="Email" defaultValue={user.email} />
               </div>
               <div className="card-body d-flex justify-content-end">
                 <a href="/profile" className="btn btn-primary">Back to profile</a>
@@ -39,7 +39,7 @@ function Edit({ user, id, title }) {
 // PropTypes
 Edit.propTypes = {
   title: PropTypes.string.isRequired,
-  user: PropTypes.shape({ username: PropTypes.string, email: PropTypes.string }).isRequired,
+  user: PropTypes.shape({ name: PropTypes.string, email: PropTypes.string }).isRequired,
   id: PropTypes.number.isRequired,
 };
 
