@@ -22,17 +22,13 @@ router.get('/registration', ifAuthRedirect('/dashboard'), (req, res) => {
 
 router.get('/logout', async (req, res) => {
   try {
-    const { access } = req.cookies;
-
-    if (access) {
-      res.locals.user = {};
-      res
-        .clearCookie(cookiesConfig.refresh)
-        .clearCookie(cookiesConfig.access)
-        .redirect('/');
-    }
+    res.locals.user = undefined;
+    res
+      .clearCookie(cookiesConfig.refresh)
+      .clearCookie(cookiesConfig.access)
+      .redirect('/');
   } catch (error) {
-    console.log(error.message);
+    res.json({ messege: error.messege });
   }
 });
 

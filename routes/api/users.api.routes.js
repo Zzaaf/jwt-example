@@ -12,7 +12,7 @@ router.route('/:id')
   .put((req, res) => {
     const { id } = req.params;
 
-    if (res.locals.user.id === Number(id)) {
+    if (res.locals.user && res.locals.user.id === Number(id)) {
       User.update(req.body, { where: { id }, returning: true })
         .then(() => res.status(200).json({ updated: true, url: '/dashboard' }))
         .catch((error) => res.status(500).json({ error }));
@@ -23,7 +23,7 @@ router.route('/:id')
   .delete(verifyAccessToken, (req, res) => {
     const { id } = req.params;
 
-    if (res.locals.user.id === Number(id)) {
+    if (res.locals.user && res.locals.user.id === Number(id)) {
       User.destroy({ where: { id } })
         .then((deletedUser) => {
           if (deletedUser) {
