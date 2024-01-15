@@ -2,7 +2,7 @@ require('dotenv').config();
 const router = require('express').Router();
 const bcrypt = require('bcrypt');
 const { User } = require('../../db/models');
-const cookiesConfig = require('../../config/cookiesConfig');
+const jwtConfig = require('../../config/jwtConfig');
 const { generateTokens } = require('../../utils/authUtils');
 
 router.post('/auth/register', async (req, res) => {
@@ -58,8 +58,8 @@ router.post('/auth/login', async (req, res) => {
 
       // Возвращаем токены в httpOnly cookie при ответе
       res
-        .cookie(cookiesConfig.refresh, refreshToken, { maxAge: cookiesConfig.maxAgeRefresh, httpOnly: true })
-        .cookie(cookiesConfig.access, accessToken, { maxAge: cookiesConfig.maxAgeAccess, httpOnly: true })
+        .cookie(jwtConfig.refresh.type, refreshToken, { maxAge: jwtConfig.refresh.expiresIn, httpOnly: true })
+        .cookie(jwtConfig.access.type, accessToken, { maxAge: jwtConfig.access.expiresIn, httpOnly: true })
         .json({ login: true, url: '/dashboard' });
     } else {
       return res.status(400).json({ message: 'All fields were not sent' });

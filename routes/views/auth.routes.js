@@ -3,7 +3,7 @@ const Home = require('../../components/Home');
 const Authorization = require('../../components/Authorization');
 const Registration = require('../../components/Registration');
 const { ifAuthRedirect } = require('../../middleware/auth');
-const cookiesConfig = require('../../config/cookiesConfig');
+const jwtConfig = require('../../config/jwtConfig');
 
 router.get('/', ifAuthRedirect('/dashboard'), (req, res) => {
   const html = res.renderComponent(Home, { title: 'JWT Example: Home' });
@@ -24,8 +24,8 @@ router.get('/logout', async (req, res) => {
   try {
     res.locals.user = undefined;
     res
-      .clearCookie(cookiesConfig.refresh)
-      .clearCookie(cookiesConfig.access)
+      .clearCookie(jwtConfig.refresh.type)
+      .clearCookie(jwtConfig.access.type)
       .redirect('/');
   } catch (error) {
     res.json({ messege: error.messege });

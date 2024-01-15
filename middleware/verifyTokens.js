@@ -1,6 +1,6 @@
 require('dotenv').config();
 const jwt = require('jsonwebtoken');
-const cookiesConfig = require('../config/cookiesConfig');
+const jwtConfig = require('../config/jwtConfig');
 const { generateTokens } = require('../utils/authUtils');
 
 // Проверка refresh токена из куки
@@ -14,14 +14,14 @@ function verifyRefreshToken(req, res, next) {
 
     // Возвращаем пару токенов в http-only cookie при ответе
     res
-      .cookie(cookiesConfig.refresh, refreshToken, { maxAge: cookiesConfig.maxAgeRefresh, httpOnly: true })
-      .cookie(cookiesConfig.access, accessToken, { maxAge: cookiesConfig.maxAgeAccess, httpOnly: true });
+      .cookie(jwtConfig.refresh.type, refreshToken, { maxAge: jwtConfig.refresh.expiresIn, httpOnly: true })
+      .cookie(jwtConfig.access.type, accessToken, { maxAge: jwtConfig.access.expiresIn, httpOnly: true });
 
     next();
   } catch (error) {
     res
-      .clearCookie(cookiesConfig.access)
-      .clearCookie(cookiesConfig.refresh);
+      .clearCookie(jwtConfig.refresh.type)
+      .clearCookie(jwtConfig.access.type);
 
     next();
   }

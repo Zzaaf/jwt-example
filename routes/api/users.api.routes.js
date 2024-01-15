@@ -1,5 +1,5 @@
 const router = require('express').Router();
-const cookiesConfig = require('../../config/cookiesConfig');
+const jwtConfig = require('../../config/jwtConfig');
 const { User } = require('../../db/models');
 const { verifyAccessToken } = require('../../middleware/verifyTokens');
 
@@ -29,8 +29,8 @@ router.route('/:id')
           if (deletedUser) {
             res.locals.user = {};
             return res
-              .clearCookie(cookiesConfig.refresh)
-              .clearCookie(cookiesConfig.access)
+              .clearCookie(jwtConfig.refresh.type)
+              .clearCookie(jwtConfig.access.type)
               .json({ delete: true, url: '/' });
           }
           return res.sendStatus(404);
